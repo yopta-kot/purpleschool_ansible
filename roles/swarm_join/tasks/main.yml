@@ -1,0 +1,22 @@
+---
+- name: Проверка токенов на server1
+  ansible.builtin.debug:
+    msg:
+      server1_keys: "{{ hostvars['server1']['ansible_facts'].keys() | list }}"
+      manager_defined: "{{ hostvars['server1']['ansible_facts']['swarm_init_token_manager'] is defined }}"
+      worker_defined: "{{ hostvars['server1']['ansible_facts']['swarm_init_token_worker'] is defined }}"
+
+- name: Подключение
+  vars:
+    # token: "{{ lookup('file', '../../tokens/token_' ~ swarm_join_type) }}"
+    ansible_python_interpreter: /opt/ansible-venvs/docker/bin/python
+  community.docker.docker_swarm:
+    state: join
+    remote_addrs: "{{ advertise_addr }}"
+    # join_token: "{{ token }}"
+    join_token: >
+      {{
+        hostvars['server1']['ansible_facts']['swarm_init_token_worker']
+        if swarm_join_type == 'worker' else
+        hostvars['server1']['ansible_facts']['swarm_init_token_manager']
+      }}

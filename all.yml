@@ -1,0 +1,36 @@
+---
+- name: Deploy / build server
+  hosts: deploy
+  become: true
+  roles:
+    - role: preconfig
+      tags: preconfig
+    - role: build
+      tags: build
+    - role: deploy
+      tags: deploy
+    - role: swarm_init
+      tags: swarm_init
+    - role: swarm_leave
+      swarm_leave_node_name: server3
+      tags: swarm_leave
+
+- name: Manager
+  hosts: managers
+  become: true
+  roles:
+    - role: preconfig
+      tags: preconfig
+    - role: swarm_join
+      swarm_join_type: manager
+      tags: swarm_join
+
+- name: Worker
+  hosts: workers
+  become: true
+  roles:
+    - role: preconfig
+      tags: preconfig
+    - role: swarm_join
+      swarm_join_type: worker
+      tags: swarm_join

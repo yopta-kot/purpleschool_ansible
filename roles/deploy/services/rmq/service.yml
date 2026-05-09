@@ -1,0 +1,16 @@
+---
+- name: "[{{ service_name }}] Выкладка сервиса"
+  tags: "{{ service_name }}"
+  block:
+    - name: "[{{ service_name }}] Выкладываем сервис"
+      vars:
+        ansible_python_interpreter: /opt/ansible-venvs/docker/bin/python
+      community.docker.docker_swarm_service:
+        name: "{{ service_name }}"
+        image: "rabbitmq:{{ service_version }}"
+        state: present
+        networks:
+          - name: "{{ deploy_network_name }}"
+        env:
+          - RABBITMQ_DEFAULT_USER={{ rmq.user }}
+          - RABBITMQ_DEFAULT_PASS={{ rmq.password }}

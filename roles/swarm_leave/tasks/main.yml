@@ -1,0 +1,23 @@
+---
+- name: Перевод в статус drain
+  vars:
+    ansible_python_interpreter: /opt/ansible-venvs/docker/bin/python
+  community.docker.docker_node:
+    hostname: "{{ swarm_leave_node_name }}"
+    availability: drain
+
+- name: Ожидание остановки
+  vars:
+    ansible_python_interpreter: /opt/ansible-venvs/docker/bin/python
+  community.docker.docker_host_info:
+    containers: true
+  register: swarm_leave_result
+  retries: 30
+  delay: 2
+  until: swarm_leave_result.host_info.ContainersRunning == 0
+  delegate_to: "{{ swarm_leave_node_name }}"
+
+- name: Удаление ноды
+  ansible.builtin.command: "docker node rm {{ swarm_leave_node_name }} --force"
+  register: swarm_leave_result
+  changed_when: swarm_leave_result != ''

@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: preconfig
+  description: Настройка серверов для работы с Docker
+  author: Damn Wizard
+  license: MIT
+  min_ansible_version: 13.6.0
+  platforms:
+    - name: Ubuntu
+      versions:
+        - resolute

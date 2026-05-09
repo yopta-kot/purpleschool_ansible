@@ -1,0 +1,8 @@
+[deploy]
+server1 ansible_host=127.0.0.1 ansible_user=vagrant ansible_port=2223 ansible_python_interpreter=/usr/bin/python3 ansible_become_exe=/usr/bin/sudo.ws
+
+[managers]
+server2 ansible_host=127.0.0.1 ansible_user=vagrant ansible_port=2224 ansible_python_interpreter=/usr/bin/python3 ansible_become_exe=/usr/bin/sudo.ws
+
+[workers]
+server3 ansible_host=127.0.0.1 ansible_user=vagrant ansible_port=2225 ansible_python_interpreter=/usr/bin/python3 ansible_become_exe=/usr/bin/sudo.ws

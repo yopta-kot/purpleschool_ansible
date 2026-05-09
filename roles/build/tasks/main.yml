@@ -1,0 +1,26 @@
+---
+- name: Клонируем репозиторий
+  ansible.builtin.git:
+    repo: https://github.com/yopta-kot/purpleschool_docker_demo.git
+    dest: "{{ build_git_folder }}"
+    version: main
+
+- name: Собираем image
+  vars:
+    ansible_python_interpreter: /opt/ansible-venvs/docker/bin/python
+  community.docker.docker_image:
+    name: "{{ registry_name }}{{ item.name }}"
+    tag: "{{ item.version }}"
+    push: true
+    force_source: true
+    force_tag: true
+    source: build
+    build:
+      path: "{{ build_git_folder }}"
+      dockerfile: "{{ build_git_folder }}/apps/{{ item.name }}/Dockerfile"
+  loop: "{{ services | difference(non_build_services) }}"
+
+- name: Удаляем репозиторий
+  ansible.builtin.file:
+    state: absent
+    path: "{{ build_git_folder }}"

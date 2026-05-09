@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: swarm_join
+  description: Присоединение к swarm
+  author: Damn Wizard
+  license: MIT
+  min_ansible_version: 13.6.0
+  platforms:
+    - name: Ubuntu
+      versions:
+        - resolute

@@ -1,0 +1,38 @@
+---
+- name: Инициализация swarm
+  vars:
+    ansible_python_interpreter: /opt/ansible-venvs/docker/bin/python
+  community.docker.docker_swarm:
+    state: present
+    advertise_addr: "{{ advertise_addr }}"
+  register: swarm_init_token
+
+# - name: Наличие директории
+#   ansible.builtin.file:
+#     path: ./tokens
+#     state: directory
+#     mode: "0755"
+#   delegate_to: localhost
+#   become: false
+
+# - name: Сохранение токена manager
+#   ansible.builtin.copy:
+#     dest: ./tokens/token_manager
+#     content: "{{ swarm_init_token.swarm_facts.JoinTokens.Manager }}"
+#     mode: "0755"
+#   delegate_to: localhost
+#   become: false
+
+# - name: Сохранение токена worker
+#   ansible.builtin.copy:
+#     dest: ./tokens/token_worker
+#     content: "{{ swarm_init_token.swarm_facts.JoinTokens.Worker }}"
+#     mode: "0755"
+#   delegate_to: localhost
+#   become: false
+
+- name: Сохранение токенов
+  ansible.builtin.set_fact:
+    swarm_init_token_manager: "{{ swarm_init_token.swarm_facts.JoinTokens.Manager }}"
+    swarm_init_token_worker: "{{ swarm_init_token.swarm_facts.JoinTokens.Worker }}"
+    cacheable: true
